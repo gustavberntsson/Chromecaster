@@ -1,5 +1,6 @@
 import os
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from ui_chromecaster import Ui_Chromecaster
 
 class MediaFile:
     def __init__(self, file_path):
@@ -24,13 +25,14 @@ class SubtitleFile(MediaFile):
     def get_subtitle_url(self):
         return f"http://din_server_ip:5000/subtitles/{self.get_filename()}"
 
-class ChromecasterGUI(QMainWindow):
+class ChromecasterGUI(QMainWindow, Ui_Chromecaster):
     def __init__(self):
         super().__init__()
+        self.setupUi(self)
+
         self.video_file = None
         self.subtitle_file = None
-
-        self.setupUi(self)
+        
         self.btnVideo.clicked.connect(self.select_video_file)
         self.btnSRT.clicked.connect(self.select_subtitle_file)
         self.btnStart.clicked.connect(self.start_playback)
