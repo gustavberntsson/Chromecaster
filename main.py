@@ -1,20 +1,10 @@
-# Python backend exempel
-from flask import Flask
-from pychromecast import Chromecast
+import sys
+from PyQt5.QtWidgets import QApplication
+from media import ChromecasterGUI
+from backend import play_media
 
-app = Flask(__name__)
-
-def find_chromecast():
-    chromecasts = pychromecast.get_chromecasts()
-    if chromecasts:
-        return chromecasts[0]
-    return None
-
-@app.route('/play/<filename>')
-def play_media(filename):
-    cast = find_chromecast()
-    if cast:
-        media_url = f"http://your_server/{filename}"
-        cast.media_controller.play_media(media_url, 'video/mp4')
-        return {"status": "playing"}
-    return {"error": "No Chromecast found"}
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = ChromecasterGUI()
+    window.show()
+    sys.exit(app.exec_())
