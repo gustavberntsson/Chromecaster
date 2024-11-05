@@ -31,6 +31,14 @@ class Ui_Chromecaster(object):
         self.statusbar.setObjectName("statusbar")
         Chromecaster.setStatusBar(self.statusbar)
 
+        self.btnSearchChromecast = QtWidgets.QPushButton(self.centralwidget)
+        self.btnSearchChromecast.setGeometry(QtCore.QRect(120, 20, 100, 28))
+        self.btnSearchChromecast.setObjectName("btnSearchChromecast")
+
+        self.comboChromecast = QtWidgets.QComboBox(self.centralwidget)
+        self.comboChromecast.setGeometry(QtCore.QRect(230, 20, 161, 28))
+        self.comboChromecast.setObjectName("comboChromecast")
+
         self.retranslateUi(Chromecaster)
         QtCore.QMetaObject.connectSlotsByName(Chromecaster)
 
@@ -42,3 +50,4 @@ class Ui_Chromecaster(object):
         self.btnStart.setText(_translate("Chromecaster", "Starta"))
         self.txtVideo.setPlaceholderText(_translate("Chromecaster", "Film"))
         self.txtSRT.setPlaceholderText(_translate("Chromecaster", "Text"))
+        self.btnSearchChromecast.setText(_translate("Chromecaster", "Sök Chromecast"))
