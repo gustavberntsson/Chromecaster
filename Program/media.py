@@ -1,6 +1,6 @@
 import os
 import threading
-from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from pychromecast import get_chromecasts
 from ui_chromecaster import Ui_Chromecaster
@@ -15,18 +15,18 @@ class MediaFile:
 class VideoFile(MediaFile):
     def __init__(self, file_path):
         super().__init__(file_path)
-        self.content_type = "video/mp4"
+        self.content_type = "video/h264"
 
     def play(self, play_media_func):
         play_media_func(self.get_filename())
 
-class SubtitleFile(MediaFile):
-    def __init__(self, file_path):
-        super().__init__(file_path)
-        self.content_type = "text/srt"
+#class SubtitleFile(MediaFile):
+    #def __init__(self, file_path):
+        #super().__init__(file_path)
+        #self.content_type = "text/srt"
 
-    def get_subtitle_url(self):
-        return f"http://din_server_ip:5000/subtitles/{self.get_filename()}"
+   # def get_subtitle_url(self):
+       # return f"http://din_server_ip:5000/subtitles/{self.get_filename()}"
 
 class ChromecasterGUI(QMainWindow, Ui_Chromecaster):
     # Definiera en signal för att uppdatera Chromecast-listan i ComboBox
@@ -37,12 +37,12 @@ class ChromecasterGUI(QMainWindow, Ui_Chromecaster):
         self.setupUi(self)
 
         self.video_file = None
-        self.subtitle_file = None
+        #self.subtitle_file = None
         self.chromecasts = []  # Lagra hittade Chromecast-enheter
 
         # Koppla knapparna till funktioner
         self.btnVideo.clicked.connect(self.select_video_file)
-        self.btnSRT.clicked.connect(self.select_subtitle_file)
+       # self.btnSRT.clicked.connect(self.select_subtitle_file)
         self.btnStart.clicked.connect(self.start_playback)
         self.btnSearchChromecast.clicked.connect(self.search_chromecast)
 
@@ -76,40 +76,35 @@ class ChromecasterGUI(QMainWindow, Ui_Chromecaster):
             self.video_file = VideoFile(file_path)
             self.txtVideo.setText(self.video_file.get_filename())
 
-    def select_subtitle_file(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, "Välj undertextsfil", "", "Subtitle Files (*.srt)")
-        if file_path:
-            self.subtitle_file = SubtitleFile(file_path)
-            self.txtSRT.setText(self.subtitle_file.get_filename())
+    #def select_subtitle_file(self):
+       # file_path, _ = QFileDialog.getOpenFileName(self, "Välj undertextsfil", "", "Subtitle Files (*.srt)")
+        #if file_path:
+         #   self.subtitle_file = SubtitleFile(file_path)
+          #  self.txtSRT.setText(self.subtitle_file.get_filename())
 
     def start_playback(self):
-    # Välj Chromecast-enheten från ComboBox
      selected_index = self.comboChromecast.currentIndex()
     
-    # Kontrollera om en enhet är vald och en videofil finns
      if selected_index >= 0 and self.video_file:
         cast = self.chromecasts[selected_index]
-        cast.wait()  # Vänta tills Chromecast är redo
+        cast.wait()
 
-        # Ange URL till videon
-        media_url = f"http://din_server_ip:5000/media/{self.video_file.get_filename()}"
+        # Sätt rätt IP-adress och port till media_url
+        media_url = f"http://192.168.0.245:5500/Media/{self.video_file.get_filename()}"
 
-        # Om undertextfil finns, ange undertext-URL och MIME-typ
-        subtitle_url = None
-        if self.subtitle_file:
-            subtitle_url = self.subtitle_file.get_subtitle_url()
+        try:
+            # Starta uppspelningen
+            cast.media_controller.play_media(media_url, 'video/mp4', stream_type='BUFFERED')
+            cast.media_controller.block_until_active()
+ 
+            # Logga status för felsökning
+            print(cast.media_controller.status)
 
-        # Starta uppspelningen med eller utan undertext-URL
-        cast.media_controller.play_media(
-            media_url,
-            'video/mp4',
-            subtitles=subtitle_url,
-            subtitle_mime_type='text/srt' if subtitle_url else None
-        )
+        except Exception as e:
+            print(f"Fel vid uppspelning: {e}")
+            QMessageBox.warning(self, "Fel", f"Uppspelningsfel: {e}")
 
-        # Blockera tills uppspelningen är aktiv
-        cast.media_controller.block_until_active()
      else:
-        # Visa varningsmeddelande om ingen enhet eller fil är vald
         QMessageBox.warning(self, "Fel", "Välj en Chromecast och en videofil innan du spelar upp.")
+
 
