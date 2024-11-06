@@ -1,10 +1,36 @@
 import os
 import threading
+import socket
+import socketserver
+import http.server
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from pychromecast import get_chromecasts
 from ui_chromecaster import Ui_Chromecaster
 
+def start_server():
+    PORT = 5500
+    Handler = http.server.SimpleHTTPRequestHandler
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print(f"Servern startad på port {PORT}")
+        httpd.serve_forever()
+
+# Starta servern i en separat tråd
+server_thread = threading.Thread(target=start_server)
+server_thread.daemon = True  # Gör så att servern stängs när programmet avslutas
+server_thread.start()
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # Ansluter till en extern IP-adress
+        s.connect(("8.8.8.8", 80))
+        ip_address = s.getsockname()[0]
+    except Exception:
+        ip_address = "127.0.0.1"
+    finally:
+        s.close()
+    return ip_address
 class MediaFile:
     def __init__(self, file_path):
         self.file_path = file_path
@@ -90,7 +116,7 @@ class ChromecasterGUI(QMainWindow, Ui_Chromecaster):
         cast.wait()
 
         # Sätt rätt IP-adress och port till media_url
-        media_url = f"http://192.168.0.245:5500/Media/{self.video_file.get_filename()}"
+        media_url = f"http://{get_ip()}:5500/Media/{self.video_file.get_filename()}"
 
         try:
             # Starta uppspelningen
