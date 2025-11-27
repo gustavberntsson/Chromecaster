@@ -1,48 +1,21 @@
 # Chromecaster
 
-Chromecaster is a Python program that allows you to play video and subtitles on your Chromecast device over WiFi. It has a graphical user interface built with PyQt5.
+Cast videos with subtitles to Chromecast. Built with Python and PyQt5.
 
-## Functionality
+**Status**: Archived. Started this ~2023 but subtitle syncing never worked properly. Moved on to learning other languages and frameworks instead of debugging subtitle timing issues.
 
-- Select video and subtitle files on your computer
-- Play videos with associated subtitles on the Chromecast device
-- Supports MP4 video format and SRT subtitle files
+## What It Was Supposed To Do
 
-## Installation Instructions
+- Pick video + subtitle files from your computer
+- Cast them to Chromecast over WiFi
+- PyQt5 GUI for file selection
 
-1. Ensure you have Python 3.7 or newer installed.
-2. Install the required packages:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Create a folder for your media and subtitle files.
-4. Run the program:
-   ```
-   python main.py
-   ```
+Supports MP4 videos and SRT subtitles.
 
-## Dependencies
+## Tech
 
-- Python 3.7+
-- PyQt5
-- pychromecast
-- Flask
+Python • PyQt5 • pychromecast • Flask
 
-## License
+---
 
-    Python-Chromecaster
-    Copyright (C) 2024 Gustav Berntsson
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License along
-    with this program; if not, write to the Free Software Foundation, Inc.,
-    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+Early Python project. Subtitle synchronization issues made it frustrating to finish. Keeping it here as reference.
